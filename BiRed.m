@@ -46,12 +46,12 @@ function [ A_out, t_out, r_out ] = BiRed( A, t, r )
      %extract values from temp
    [a12t,A22]=FLA_Part_2x1(matrix,1,'FLA_TOP');
 
-    if size(A22,1) >=1
+    if size(A22,1) >0
     [u12,rho1] =Housev1(transpose(a12t));
     
     a12t= u12'
     u12(1)=1;
-    size(A22,1)>1
+    
     A22= A22* H(u12,rho1);
     end
    

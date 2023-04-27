@@ -58,22 +58,28 @@ end
 % Uncomment the lines
 
 % Extract the Householder vectors for U_A from B (below the diagonal)
-U_HouseholderVectors = tril(B, -1);
+
 
 
 
 % Extract the Householder scalars for U_A from t
-U_HouseholderScalars = t;
+lower= tril(B,-1)+eye(m);
+
 
 % Form U_A using FormQ function
-% Ua_A = FormQ(U_HouseholderVectors, U_HouseholderScalars);
- U_A= U_HouseholderVectors;
+ 
+ U_A = FormQ(lower, t);
+ V_A= eye(m,m);
+
+ upper= triu(B,+2);
+ upper=upper(1:4,2:5)';
 
 
-V_HouseHolderVectors= triu(B,+2)
-V_HouseholderScalars= r;
-V_A = eye( m, m );
-V_A( 2:m, 2:m ) = V_HouseHolderVectors(1:4, 1:4);
+
+
+ V_A(2:m, 2:m)=FormQ(Vvectors,r(1:4));
+
+
 
 % Uncomment the below to check if you got it right:
 disp( 'Difference between U_A * Bi * V_A and A:' );
