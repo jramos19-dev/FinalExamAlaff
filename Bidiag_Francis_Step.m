@@ -1,50 +1,72 @@
-function Bi = bidiag_francis_step(Bi)
-% Perform a single step of the Bidiagonal Francis Step algorithm on the
-% bidiagonal matrix Bi, working on the i-th superdiagonal element.
-% Input:
-%   - Bi: a bidiagonal matrix of size m x n (m >= n)
-% Output:
-%   - Bi: the updated bidiagonal matrix
+% function Bi_next = Bidiag_Francis_Step(B)
+% 
+% m=size(B,1);
+% T11=B(1,1);
+% display(T11);
+% T11=(T11*T11);
+% 
+% T21=B(1,2)*B(1,1);
+% display(T21);
+% Tmm=(B(m-1,m)^2)+ (B(m,m)^2);
+% display(Tmm);
+% 
+% for i=1,m
+% tau = B(i,i)^2 + B(i+1,i)^2;
+% sigma = B(i+1,i)/tau;
+% gamma = B(i,i)/tau;
+% 
+% G0=[gamma ,sigma;-sigma gamma];
+% 
+% Bvector=[B(i,i);B(i+1,i)];
+% 
+% Bvector=G0'*Bvector;
+% display(B);
+% display(Bvector);
+% 
+% 
+% end
 
-% Determine the size of the matrix Bi
-[m, n] = size(Bi);
 
-% Loop over the superdiagonal elements of Bi
-for i = 1:min(m-1, n)
-    % Extract the i-th superdiagonal element and the (i+1)-th element in the
-    % same column
-    a = Bi(i, i);
-    c = Bi(i+1, i);
+function Bi_next = Bidiag_Francis_Step(B)
+m = size(B,1);
+T11 = B(1,1)^2;
+T21 = B(1,2)*B(1,1);
+Tmm = B(m-1,m)*B(m,m) + B(m,m)^2;
 
-    % Compute the rotation matrix that annihilates the two elements
-    x = sqrt(a^2 + c^2);
-    cos_theta = a / x;
-    sin_theta = -c / x;
-    G = [cos_theta, -sin_theta; sin_theta, cos_theta];
+% Compute first Givens rotation
+tau = T11 + T21;
+sigma = B(1,2)/tau;
+gamma = B(1,1)/tau;
+G = [gamma, sigma; -sigma, gamma];
 
-    % Apply the rotation to the i-th and (i+1)-th rows of Bi
-    Bi(i:i+1, :) = G * Bi(i:i+1, :);
+% Apply Givens rotation to introduce the bulge
+B(1:2, 1:2) = G * B(1:2, 1:2);
 
-    % Apply the transpose of the rotation to the i-th and (i+1)-th columns of Bi
-    Bi(:, i:i+1) = Bi(:, i:i+1) * G';
+% Apply Givens rotations to chase the bulge to the right
+for i = 1:m-2
+    % Compute Givens rotation parameters
+    tau = B(i,i)^2 + B(i+1,i)^2;
+    sigma = B(i+1,i)/tau;
+    gamma = B(i,i)/tau;
+    
+    % Compute and apply left Givens rotation
+    G = [gamma, sigma; -sigma, gamma];
+    B(i:i+1, i:m) = G' * B(i:i+1, i:m);
+    
+    % Compute and apply right Givens rotation
+    tau = B(i,i+1)^2 + B(i,i+2)^2;
+    sigma = B(i,i+2)/tau;
+    gamma = B(i,i+1)/tau;
+    G = [gamma, sigma; -sigma, gamma];
+    B(1:i+2, i+1:i+2) = B(1:i+2, i+1:i+2) * G;
+end
 
-    % Update the (i+1)-th superdiagonal element, if it exists
-    if i < n-1
-        % Extract the (i+1)-th superdiagonal element and the (i+2)-th element in the
-        % same column
-        b = Bi(i+1, i+1);
-        d = Bi(i+1, i+2);
+% Apply final Givens rotation to chase the bulge off the matrix
+tau = B(m-1,m-1)^2 + Tmm;
+sigma = B(m-1,m)/tau;
+gamma = B(m-1,m-1)/tau;
+G = [gamma, sigma; -sigma, gamma];
+B(m-1:m, :) = G' * B(m-1:m, :);
 
-        % Compute the rotation matrix that introduces a new bulge in the matrix
-        y = sqrt(b^2 + d^2);
-        cos_phi = b / y;
-        sin_phi = -d / y;
-        H = [cos_phi, -sin_phi; sin_phi, cos_phi];
-
-        % Apply the rotation to the (i+1)-th and (i+2)-th columns of Bi
-        Bi(:, i+1:i+2) = Bi(:, i+1:i+2) * H;
-
-        % Apply the transpose of the rotation to the (i+1)-th and (i+2)-th rows of Bi
-        Bi(i+1:i+2, :) = H' * Bi(i+1:i+2, :);
-    end
+Bi_next = B;
 end

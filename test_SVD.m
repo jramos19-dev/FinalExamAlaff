@@ -77,7 +77,7 @@ lower= tril(B,-1)+eye(m);
 
 
 
- V_A(2:m, 2:m)=FormQ(Vvectors,r(1:4));
+ V_A(2:m, 2:m)=FormQ(upper,r(1:4));
 
 
 
