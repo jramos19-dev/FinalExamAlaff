@@ -77,7 +77,7 @@ lower= tril(B,-1)+eye(m);
 
 
 
- V_A(2:m, 2:m)=FormQ(Vvectors,r(1:4));
+ V_A(2:m, 2:m)=FormQ(upper,r(1:4));
 
 
 
@@ -108,18 +108,18 @@ end
 % Below, we just execute a bunch of these steps, to see if the elements on
 % the superdiagonal converge the way they should.
 
-Bi_next = Bidiag_Francis_Step( Bi )
-Bi_next = Bidiag_Francis_Step( Bi_next )
-Bi_next = Bidiag_Francis_Step( Bi_next )
-Bi_next = Bidiag_Francis_Step( Bi_next )
-Bi_next = Bidiag_Francis_Step( Bi_next )
-Bi_next = Bidiag_Francis_Step( Bi_next )
-Bi_next = Bidiag_Francis_Step( Bi_next )
-Bi_next = Bidiag_Francis_Step( Bi_next )
-Bi_next = Bidiag_Francis_Step( Bi_next )
-Bi_next = Bidiag_Francis_Step( Bi_next )
-Bi_next = Bidiag_Francis_Step( Bi_next )
-Bi_next = Bidiag_Francis_Step( Bi_next )
+Bi_next = bidiag_francis_step( Bi )
+Bi_next = bidiag_francis_step( Bi_next )
+Bi_next = bidiag_francis_step( Bi_next )
+Bi_next = bidiag_francis_step( Bi_next )
+Bi_next = bidiag_francis_step( Bi_next )
+Bi_next = bidiag_francis_step( Bi_next )
+Bi_next = bidiag_francis_step( Bi_next )
+Bi_next = bidiag_francis_step( Bi_next )
+Bi_next = bidiag_francis_step( Bi_next )
+Bi_next = bidiag_francis_step( Bi_next )
+Bi_next = bidiag_francis_step( Bi_next )
+Bi_next = bidiag_francis_step( Bi_next )
 
 % We wrote the following routine, which wraps deflation in a loop around
 % the routine Bidiag_Francis_Step that you wrote.
