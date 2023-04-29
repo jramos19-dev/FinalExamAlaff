@@ -30,6 +30,6 @@ function [ B ] = Implicit_bidiag_QR( B )
         end
         
         [ B(icur:curm,icur:curm) ] = ...
-            bidiag_francis_step( B( icur:curm, icur:curm ) );
+            Bidiag_Francis_Step( B( icur:curm, icur:curm ) );
     end
 end

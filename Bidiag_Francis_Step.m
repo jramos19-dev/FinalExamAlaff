@@ -1,15 +1,15 @@
 
-function B = bidiag_francis_step(B)
+function B = Bidiag_Francis_Step(B)
     [m, n] = size(B);
     if m <= 2
         return
     end
-    
+    if B(2,1)==0
     % Compute the initial values of T11, T21, and Tmm
     T11 = B(1, 1)^2;
     T21 = B(1, 1) * B(1, 2);
     Tmm = B(2, 3)^2 + B(3, 3)^2;
-
+    end
     % Compute the Givens rotation that annihilates the (1,2) and (2,1) elements
     G = Givens_rotation( [T11- Tmm
                                  T21      ]);
@@ -23,28 +23,29 @@ function B = bidiag_francis_step(B)
         % Compute the updated values of T11, T21, and Tmm
         T11 = B(1, 1);
         T21 = B(2, 1);
-        Tmm = B(3,3);
-        
+        Tmm = B(m,m);
+
         T11_Tmm= T11-Tmm;
         % Compute the Givens rotation that annihilates the (i,i+1) and (i+1,i) elements
         G = Givens_rotation( [T11_Tmm
                                  T21      ]);
-
-        % Apply the rotation to the (i,i+1) and (i+1,i) elements
-        B(i-1:i, i-1:i) = G' * B(i-1:i, i-1:i);
         
+        display(B);
+        %apply rotation to same columns in order to zero out the bulge 
+        B(i-1:i, i-1:i) = G' * B(i-1:i, i-1:i);
+        display(B);
         % Compute the updated values of T11, T21, and Tmm
-        T11 = B(1, 1)^2;
-        T21 = B(1, 1) * B(1, 2);
-        Tmm = B(2, 3)^2 + B(3, 3)^2;
+        T11 = B(1, 1);
+        T21 = B(2,1);
+        Tmm = B(m,m);
 
             % Compute the Givens rotation that introduces a new bulge in the matrix
              G = Givens_rotation( [T11- Tmm
                                  T21      ]);
 
             % Apply the rotation to the (i+1,i) and (i+1,i+1) elements
-            B(i+1:i+2, i:i+1) = B(i+1:i+2, i:i+1) * G;
-            B(i:i+1, i+1:i+2) = G' * B(i:i+1, i+1:i+2);
+            B(i:i+1, i+1:i) = B(i+1:i, i+1:i) * G;
+            B(i+1:i, i+1:i) = G' * B(i+1:i, i+1:i);
             
         end
         end
