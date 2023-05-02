@@ -137,6 +137,7 @@ if norm( svd( A ) - svd( diag( diag( D ) ) ) ) > 1.0e-10
     disp( 'Something is wrong with your Implicit_bidiag_QR' ); 
     [ svd( A )  svd( diag( diag( D ) ) )  ]
 end
+disp(D);
 
 % Now, modify Implicit_bidiag_QR to create Implicit_bidiag_QR_SVD that also
 % updates U_A and V_A by applying the Givens' rotations appropriately,
@@ -148,14 +149,14 @@ end
 % Call your routine that updates U_A and V_A to get the SVD (modulo the
 
 % ordering of the singular values)
-% [ U, Sigma, V ] = Implicit_bidiag_QR_SVD( U_A, Bi, V_A );
+[ U, Sigma, V ] = Implicit_bidiag_QR_SVD( U_A, Bi, V_A );
 
-% if norm( svd( A ) - svd( diag( diag( Sigma ) ) ) ) > 1.0e-10 
-%     disp( 'Something is wrong with your Implicit_bidiag_QR_SVD' ); 
-%     [ svd( A )  svd( diag( diag( Sigma ) ) )  ]
-% end
+if norm( svd( A ) - svd( diag( diag( Sigma ) ) ) ) > 1.0e-10 
+    disp( 'Something is wrong with your Implicit_bidiag_QR_SVD' ); 
+    [ svd( A )  svd( diag( diag( Sigma ) ) )  ]
+end
 
-% disp( 'Difference between A and U * Sigma * transpose(V) ')
-% disp( norm( A - U * Sigma * V', 'fro' ) );
+disp( 'Difference between A and U * Sigma * transpose(V) ')
+disp( norm( A - U * Sigma * V', 'fro' ) );
 
-% A - U * Sigma * V'
+A - U * Sigma * V'
