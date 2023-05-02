@@ -2,9 +2,9 @@ function [B,V_A,U_A] = Bidiag_Francis_Step_Update_U_V(B,V_A,U_A)
     [m, n] = size(B);
 
    if m==2
-            T11 = B(1,1)^2;
-            T21 = B(1,2)*B(1,1);
-            Tmm = B(m-1,m)^2 + B(m,m)^2;
+            T11 = B(1,1);
+            T21 = B(1,2);
+            Tmm = B(m,m);
 
          G = Givens_rotation( [(T11-Tmm)
                                          T21      ]);
@@ -27,7 +27,15 @@ function [B,V_A,U_A] = Bidiag_Francis_Step_Update_U_V(B,V_A,U_A)
                                          T221      ]);
             G3 = Givens_rotation( [(T311-T3mm)
                                          T321      ]);
-            
+         V_A=V_A*G2;
+        display(V_A);
+        V_A(1,2)=0;
+        V_A(2,1)=0;
+
+        U_A=U_A*G3;
+        display(U_A);
+        U_A(1,2)=0;
+        V_A(2,1)=0;
    return
    end
 
@@ -65,7 +73,9 @@ function [B,V_A,U_A] = Bidiag_Francis_Step_Update_U_V(B,V_A,U_A)
                                          T321      ]);
              U_A(m-1:m, m-1:m)= G3'*U_A(m-1:m, m-1:m);
 
-             display(B,U_A, V_A);
+             display(B);
+             display(U_A);
+             display(V_A);
             
             
            
